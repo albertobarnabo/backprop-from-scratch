@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Reference solution: kept locally, never committed.
+# Run the checks against it with:  BACKPROP_IMPL=mlp uv run pytest
+/mlp/
+/tests/
+/train.py
+/main.py
