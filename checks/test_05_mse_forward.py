@@ -1,8 +1,8 @@
-"""Step 5: MSE.forward"""
+"""Step 5: MSE.__init__ and MSE.forward"""
 
 import numpy as np
 
-from checks.helpers import BATCH, N_OUT, Unchanged, check_close, check_shape, fail, load
+from checks.helpers import BATCH, N_OUT, Unchanged, check_close, check_shape, load
 
 
 def make_case(seed=4):
@@ -62,24 +62,11 @@ def test_leaves_pred_and_y_alone():
     untouched.check("forward")
 
 
-def test_caches_pred_and_y():
-    """forward stores pred and y in self.pred and self.y, for backward to use later"""
-    loss = load("losses").MSE()
-    pred, y = make_case()
-    loss.forward(pred.copy(), y.copy())
-    if getattr(loss, "pred", None) is None or getattr(loss, "y", None) is None:
-        fail("self.pred or self.y is still None after forward. Store both: backward will need them.")
-    check_close("self.pred", loss.pred, pred, mistakes=[(y, "You swapped them: self.pred got y.")])
-    check_close("self.y", loss.y, y)
-
-
 def test_works_again_with_new_data():
-    """called a second time with new data, forward computes and stores the new values"""
+    """called a second time with new data, forward computes the new value"""
     loss = load("losses").MSE()
     pred, y = make_case()
     loss.forward(pred, y)
     new_pred, new_y = make_case(seed=14)
     check_close("C on the second call", loss.forward(new_pred, new_y), by_hand(new_pred, new_y),
                 mistakes=[(by_hand(pred, y), "You returned the result of the first call again.")])
-    check_close("self.pred after the second call", loss.pred, new_pred,
-                mistakes=[(pred, "self.pred still holds the first call's value: store it on every call.")])

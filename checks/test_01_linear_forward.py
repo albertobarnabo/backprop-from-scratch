@@ -1,8 +1,8 @@
-"""Step 1: Linear.forward"""
+"""Step 1: Linear.__init__ and Linear.forward"""
 
 import numpy as np
 
-from checks.helpers import BATCH, N_IN, N_OUT, Unchanged, check_close, check_shape, fail, random_linear
+from checks.helpers import BATCH, N_IN, N_OUT, Unchanged, check_close, check_shape, fail, load, random_linear
 
 
 def by_hand(layer, x):
@@ -12,6 +12,48 @@ def by_hand(layer, x):
         for j in range(N_OUT):
             z[i, j] = sum(layer.W[j, k] * x[i, k] for k in range(N_IN)) + layer.b[j]
     return z
+
+
+def test_parameters_have_the_right_shapes():
+    """__init__ creates W with shape (n_out, n_in) and b with shape (n_out,)"""
+    layer = load("layers").Linear(N_IN, N_OUT, np.random.default_rng(0))
+    for name in ("W", "b"):
+        if getattr(layer, name, None) is None:
+            fail(f"The layer has no self.{name}. The parameters must be called W and b: the rest of the code looks for them.")
+    check_shape("self.W", layer.W, (N_OUT, N_IN),
+                why="W[j, k] is w_jk, the weight from input k to neuron j: one row per neuron.")
+    check_shape("self.b", layer.b, (N_OUT,), why="One bias per neuron, as a flat vector.",
+                hints={(N_OUT, 1): "b has an extra dimension.", (1, N_OUT): "b has an extra dimension."})
+
+
+def test_weights_come_from_the_rng():
+    """two layers built from the same seed are identical, from different seeds they're not"""
+    Linear = load("layers").Linear
+    first = Linear(N_IN, N_OUT, np.random.default_rng(0)).W
+    again = Linear(N_IN, N_OUT, np.random.default_rng(0)).W
+    other = Linear(N_IN, N_OUT, np.random.default_rng(1)).W
+    if not np.array_equal(first, again):
+        fail("Two layers built from the same seed got different weights.\n"
+             "Draw every random number from the rng you're given: np.random.something() uses a global "
+             "generator that ignores the seed.")
+    if np.array_equal(first, other):
+        fail("Layers built from different seeds got the same weights. The weights should be random, "
+             "drawn from the rng you're given.")
+
+
+def test_weights_are_not_all_equal():
+    """the weights don't all start with the same value"""
+    W = np.asarray(load("layers").Linear(N_IN, N_OUT, np.random.default_rng(0)).W)
+    if np.all(W == W.flat[0]):
+        fail(f"Every weight starts at {W.flat[0]}. Then every neuron of the layer computes the same thing, "
+             "gets the same gradient, and they stay identical forever: the layer is as good as one neuron.\n"
+             "Start the weights at different, random values.")
+
+
+def test_works_without_an_rng():
+    """Linear(n_in, n_out) also works when no rng is passed"""
+    layer = load("layers").Linear(N_IN, N_OUT)
+    check_shape("self.W", layer.W, (N_OUT, N_IN), why="With rng=None, make a random generator yourself.")
 
 
 def test_output_shape():
@@ -38,19 +80,6 @@ def test_output_values():
     )
 
 
-def test_caches_the_input():
-    """forward stores its input in self.x, for backward to use later"""
-    layer, x = random_linear()
-    original = x.copy()
-    layer.forward(x)
-    if getattr(layer, "x", None) is None:
-        fail("self.x is still None after forward. Store the input x: backward will need it.")
-    check_close(
-        "self.x", layer.x, original,
-        mistakes=[(by_hand(layer, x), "You stored the output z in self.x. Store the input: backward needs it.")],
-    )
-
-
 def test_leaves_x_and_the_parameters_alone():
     """forward doesn't change x, W or b"""
     layer, x = random_linear()
@@ -68,12 +97,9 @@ def test_leaves_x_and_the_parameters_alone():
 
 
 def test_works_again_with_new_data():
-    """called a second time with new data, forward computes and stores the new values"""
+    """called a second time with new data, forward computes the new values"""
     layer, x = random_linear()
     layer.forward(x)
     new_x = np.random.default_rng(10).standard_normal((BATCH, N_IN))
-    z = layer.forward(new_x)
-    check_close("z on the second call", z, by_hand(layer, new_x),
+    check_close("z on the second call", layer.forward(new_x), by_hand(layer, new_x),
                 mistakes=[(by_hand(layer, x), "You returned the result of the first call again.")])
-    check_close("self.x after the second call", layer.x, new_x,
-                mistakes=[(x, "self.x still holds the first call's input: store the input on every call.")])

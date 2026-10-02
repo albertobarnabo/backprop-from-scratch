@@ -89,28 +89,36 @@ def test_leaves_the_parameters_alone():
 
 
 def test_works_again_with_new_data():
-    """called a second time, backward overwrites dW and db with the new gradients"""
+    """called a second time with new data, backward overwrites dW and db with the new gradients"""
     layer, x, grad_out, cost = make_case(seed=1)
     first_dW = numerical_grad(cost, layer.W)
     first_db = numerical_grad(cost, layer.b)
     layer.forward(x)
     layer.backward(grad_out)
 
-    new_grad_out = np.random.default_rng(11).standard_normal((BATCH, N_OUT))
+    rng = np.random.default_rng(11)
+    new_x = rng.standard_normal((BATCH, N_IN))
+    new_grad_out = rng.standard_normal((BATCH, N_OUT))
 
     def new_cost():
+        return np.sum(layer.forward(new_x) * new_grad_out)
+
+    def stale_cost():
         return np.sum(layer.forward(x) * new_grad_out)
 
     expected_dW = numerical_grad(new_cost, layer.W)
     expected_db = numerical_grad(new_cost, layer.b)
-    layer.forward(x)
+    stale_dW = numerical_grad(stale_cost, layer.W)
+    layer.forward(new_x)
     layer.backward(new_grad_out)
 
     piled_up = ("self.{} kept the previous call's gradient and added the new one to it (+=). Overwrite it "
                 "instead: each backward computes the gradient from scratch.")
     check_close("self.dW on the second call", layer.dW, expected_dW,
                 mistakes=[(first_dW + expected_dW, piled_up.format("dW")),
-                          (first_dW, "self.dW still holds the first call's gradient.")])
+                          (first_dW, "self.dW still holds the first call's gradient."),
+                          (stale_dW, "self.dW was computed with the input of the first forward call. "
+                                     "Whatever forward keeps for backward must be updated on every call.")])
     check_close("self.db on the second call", layer.db, expected_db,
                 mistakes=[(first_db + expected_db, piled_up.format("db")),
                           (first_db, "self.db still holds the first call's gradient.")])

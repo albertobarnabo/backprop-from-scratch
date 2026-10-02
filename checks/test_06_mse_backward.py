@@ -65,5 +65,5 @@ def test_works_again_with_new_data():
     expected = numerical_grad(lambda: by_hand(new_pred, new_y), new_pred)
     loss.forward(new_pred, new_y)
     check_close("the returned dC/da on the second call", loss.backward(), expected,
-                mistakes=[(first, "You returned the first call's gradient again: compute it from the latest "
-                                  "self.pred and self.y every time.")])
+                mistakes=[(first, "You returned the first call's gradient again: compute it from the "
+                                  "values of the latest forward, every time.")])

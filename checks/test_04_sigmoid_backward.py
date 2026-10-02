@@ -45,7 +45,8 @@ def test_dz_values():
             (s * (1 - s), "You returned σ'(z) alone. Chain rule: multiply it by grad_out, the dC/da coming from above."),
             (grad_out, "You returned grad_out unchanged. Multiply it by σ'(z), this layer's own factor."),
             (grad_out * s_of_s * (1 - s_of_s),
-             "Looks like you applied σ again to self.sig_z. It already is σ(z): use it as it is."),
+             "Looks like you applied σ twice: σ(σ(z)). If you kept σ(z) from forward, it already is σ(z): "
+             "use it as it is."),
             (grad_out * (1 - s ** 2), "1 − σ² looks like the derivative of tanh, 1 − tanh². For the sigmoid it's σ(z)(1 − σ(z))."),
             (grad_out * s, "Half of σ'(z) is missing: it's σ(z) × (1 − σ(z))."),
             (grad_out * (1 - s), "Half of σ'(z) is missing: it's σ(z) × (1 − σ(z))."),
@@ -54,10 +55,10 @@ def test_dz_values():
 
 
 def test_leaves_its_inputs_alone():
-    """backward doesn't change grad_out, nor σ(z) stored by forward"""
+    """backward doesn't change grad_out, nor the σ(z) that forward returned"""
     sigmoid, z, grad_out, _ = make_case()
-    sigmoid.forward(z)
-    untouched = Unchanged(grad_out=grad_out, **{"self.sig_z": sigmoid.sig_z})
+    out = sigmoid.forward(z)
+    untouched = Unchanged(grad_out=grad_out, **{"the σ(z) returned by forward": out})
     sigmoid.backward(grad_out)
     untouched.check("backward")
 

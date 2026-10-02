@@ -13,10 +13,12 @@ NAMES = ["first", "second", "third"]
 class Scale:
     """A toy layer: multiplies by a constant, and writes its name in a log when backward runs."""
 
-    def __init__(self, name, factor, log):
+    def __init__(self, name, factor, log, forward_log=None):
         self.name, self.factor, self.log = name, factor, log
+        self.forward_log = forward_log if forward_log is not None else []
 
     def forward(self, x):
+        self.forward_log.append(self.name)
         return self.factor * x
 
     def backward(self, grad_out):
@@ -24,10 +26,10 @@ class Scale:
         return self.factor * grad_out
 
 
-def toy_network():
+def toy_network(forward_log=None):
     log = []
-    net = load("network").Sequential([Scale("first", 2, log), Scale("second", 3, log), Scale("third", 5, log)])
-    return net, log
+    layers = [Scale(name, factor, log, forward_log) for name, factor in zip(NAMES, [2, 3, 5])]
+    return load("network").Sequential(layers), log
 
 
 def test_layers_run_in_reverse():
@@ -73,25 +75,25 @@ def test_gradient_flows_through_every_layer():
 
 
 def test_leaves_the_network_alone():
-    """backward doesn't reorder self.layers, and works every time it's called"""
-    net, log = toy_network()
-    before = list(net.layers)
-    for _ in range(2):
+    """backward doesn't reorder the layers, and works every time it's called"""
+    forward_log = []
+    net, log = toy_network(forward_log)
+    for call in ("first", "second"):
+        forward_log.clear()
         log.clear()
         net.forward(np.ones((1, 2)))
-        net.backward(np.ones((1, 2)))
-        if [id(layer) for layer in net.layers] != [id(layer) for layer in before]:
+        if forward_log != NAMES:
             fail(
-                "backward changed self.layers, e.g. with self.layers.reverse() or "
-                "self.layers = self.layers[::-1].\n"
-                "That flips the network itself: the next forward would run it upside down. Walk the list "
-                "backwards without changing it: reversed(self.layers) gives the layers from last to first."
+                TOYS + f"after one backward, forward ran the layers in this order: {forward_log}.\n"
+                "backward changed the order of the layers, e.g. with list.reverse() or by storing the list "
+                "reversed: that flips the network itself. Walk the list backwards without changing it."
             )
+        net.backward(np.ones((1, 2)))
         if log != NAMES[::-1]:
             fail(
-                TOYS + f"on the second call, backward called {log} instead of {NAMES[::-1]}.\n"
-                "backward must work every time, not just once: don't keep the reversed layers on self "
-                "(an iterator like reversed(...) can only be walked through once)."
+                TOYS + f"on the {call} call, backward called {log} instead of {NAMES[::-1]}.\n"
+                "backward must work every time, not just once: an iterator like reversed(...) kept from an "
+                "earlier call can only be walked through once."
             )
 
 

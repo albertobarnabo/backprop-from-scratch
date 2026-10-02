@@ -1,4 +1,4 @@
-"""Step 7: Sequential.forward"""
+"""Step 7: Sequential.__init__ and Sequential.forward"""
 
 import numpy as np
 
@@ -26,12 +26,15 @@ def toy_network():
 
 
 def test_layers_run_in_order():
-    """every layer runs once, in list order, each one getting the previous layer's output"""
+    """every layer runs once on the whole batch, in list order, each one getting the previous layer's output"""
     net, log = toy_network()
-    x = np.array([[1.0, 2.0]])
+    x = np.array([[1.0, 2.0], [3.0, 4.0]])
     out = net.forward(x)
 
     called = [name for name, _ in log]
+    if called == NAMES * len(x):
+        fail(TOYS + "forward ran the whole network once per example. Pass the whole batch through each "
+                    "layer at once: every layer handles all the rows together, and backward needs all of them.")
     if sorted(called) != sorted(NAMES):
         fail(TOYS + f"forward called {called}, but the network has {NAMES}. Every layer must run, exactly once.")
     if called != NAMES:
@@ -72,9 +75,3 @@ def test_real_network():
         for layer in build():
             expected = layer.forward(expected)
         check_close("the network output", net.forward(x), expected, sizes=NET_SIZES)
-        if np.shape(net.layers[0].x) != x.shape:
-            fail(
-                f"After forward, the first Linear has stored an input of shape {np.shape(net.layers[0].x)}, "
-                f"not the whole batch {x.shape}.\n"
-                "Pass the whole batch through each layer at once: backward needs every example."
-            )
