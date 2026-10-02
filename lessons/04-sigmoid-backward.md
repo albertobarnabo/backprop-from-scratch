@@ -16,7 +16,7 @@ So:
 
 $$\sigma'(z) = \sigma(z) \big(1 - \sigma(z)\big)$$
 
-That's why forward stored $\sigma(z)$ in `self.sig_z`: the derivative only needs that.
+The derivative only needs $\sigma(z)$, which forward already computed.
 
 ### The chain rule, one neuron at a time
 
@@ -28,17 +28,18 @@ Compare with the input gradient of `Linear`: there, $a_k$ fed **every** neuron, 
 
 ## Your task
 
-In `Sigmoid.backward(self, grad_out)`, using `self.sig_z`:
+Write `Sigmoid.backward`, which returns $\frac{\partial C}{\partial z}$.
 
-1. compute $\sigma'(z)$ for every entry;
-2. return $\frac{\partial C}{\partial z}$.
+Questions to ask yourself:
+
+- Where does $\sigma(z)$ come from, now that forward has returned?
+- If forward didn't keep anything, what would you have to change in step 3?
 
 ## Shapes
 
 | | Shape |
 |---|---|
 | `grad_out` (in) | same as the output of forward |
-| `self.sig_z` | same as the output of forward |
 | returned $\frac{\partial C}{\partial z}$ | same as `grad_out` |
 
 ## Hints
@@ -53,7 +54,7 @@ Every array here has the same shape, and every entry is handled on its own: you 
 <details>
 <summary>Hint 2</summary>
 
-`self.sig_z` already **is** $\sigma(z)$. Don't apply the sigmoid to it again.
+If you kept $\sigma(z)$ from forward, it already **is** $\sigma(z)$. Don't apply the sigmoid to it again.
 
 </details>
 

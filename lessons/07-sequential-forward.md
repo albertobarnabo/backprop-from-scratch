@@ -1,6 +1,6 @@
-# Step 7: `Sequential.forward`
+# Step 7: `Sequential.__init__` and `Sequential.forward`
 
-> **Write:** `Sequential.forward` in `backprop/network.py`
+> **Write:** `Sequential.__init__` and `Sequential.forward` in `backprop/network.py`
 
 ## Theory
 
@@ -16,11 +16,16 @@ In code, `Sequential` holds the layers in a list, in the order the data flows th
 
 It doesn't need to know what kind of layers they are: each one has a `forward`, and that's all it uses.
 
-While the data flows up, every layer also stores what its backward will need (`self.x`, `self.sig_z`). That's why forward always runs before backward.
+While the data flows up, every layer keeps what its own backward will need. That's why forward always runs before backward.
 
 ## Your task
 
-In `Sequential.forward(self, x)`: pass `x` through every layer in `self.layers`, in order, and return the output of the last one.
+Write `Sequential.__init__` and `Sequential.forward`, which passes `x` through every layer, in order, and returns the output of the last one.
+
+Questions to ask yourself:
+
+- What will forward, backward and step need to find later?
+- What does each layer receive as its input?
 
 ## Shapes
 
@@ -36,7 +41,7 @@ The shape changes along the way: each Linear changes the number of columns, each
 <details>
 <summary>Hint 1</summary>
 
-A `for` loop over `self.layers`, where each layer's output becomes the value you pass to the next one.
+A `for` loop over the layers, where each layer's output becomes the value you pass to the next one.
 
 </details>
 

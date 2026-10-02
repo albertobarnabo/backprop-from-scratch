@@ -1,6 +1,6 @@
-# Step 5: `MSE.forward`
+# Step 5: `MSE.__init__` and `MSE.forward`
 
-> **Write:** `MSE.forward` in `backprop/losses.py`
+> **Write:** `MSE.__init__` and `MSE.forward` in `backprop/losses.py`
 >
 > **Notes:** page 1 ($C_0$), page 2 (total cost), page 3 (multiple outputs)
 
@@ -28,16 +28,14 @@ where $a_{ij}$ is output $j$ of example $i$ (`pred[i, j]`), $y_{ij}$ its target,
 
 Some books put a $\frac{1}{2}$ in front, to cancel the 2 of the derivative. Not here: this is exactly the cost from the notes.
 
-### Why forward stores pred and y
-
-The gradient of the cost (next step) needs both, and it's computed later: store them in `self.pred` and `self.y`.
-
 ## Your task
 
-In `MSE.forward(self, pred, y)`:
+Write `MSE.__init__` and `MSE.forward`, which returns $C$ as a single number.
 
-1. store `pred` and `y`;
-2. compute $C$ and return it, as a single number.
+Questions to ask yourself:
+
+- `MSE.backward()` (step 6) takes no arguments at all. What will it need, and where will it find it?
+- Does the loss have anything to learn?
 
 ## Shapes
 

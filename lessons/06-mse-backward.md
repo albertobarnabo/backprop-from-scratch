@@ -28,14 +28,18 @@ That $\frac{1}{n}$ is the one from step 2. Because the loss puts it into the ver
 
 ## Your task
 
-In `MSE.backward(self)`, using `self.pred` and `self.y` stored by forward: return $\frac{\partial C}{\partial a}$ for every entry.
+Write `MSE.backward`, which returns $\frac{\partial C}{\partial a}$ for every entry.
+
+Questions to ask yourself:
+
+- backward receives nothing: did forward keep what the formula needs?
 
 ## Shapes
 
 | | Shape |
 |---|---|
-| `self.pred` | `(batch_size, n_out)` |
-| `self.y` | `(batch_size, n_out)` |
+| `pred`, from forward | `(batch_size, n_out)` |
+| `y`, from forward | `(batch_size, n_out)` |
 | returned $\frac{\partial C}{\partial a}$ | `(batch_size, n_out)`, like `pred` |
 
 ## Hints

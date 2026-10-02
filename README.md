@@ -33,7 +33,7 @@ If you are preparing a technical interview and this question sounds impossible t
 
 How? With a very simple challenge: your task is to **implement an MLP of three layers using only numpy.**
 
-This could sound hard to tackle, but that's why this repo is here for you: you will be guided through the process. Each step starts with the theory, then you write one function whose signature, shapes and docstring are already there. A checker tells you, in plain words, what's right and what isn't.
+This could sound hard to tackle, but that's why this repo is here for you: you will be guided through the process. Each step starts with the theory, then you write the methods of that step: only their signatures, shapes and a few guiding questions are there. A checker tells you, in plain words, what's right and what isn't.
 
 <br>
 
@@ -72,24 +72,24 @@ python tour.py
 Every step is the same loop:
 
 1. **Read** the lesson: the theory, the shapes to aim for, and hints if you're stuck.
-2. **Write** one function in `backprop/`, replacing its `raise NotImplementedError(...)`.
+2. **Write** the methods of the step in `backprop/`, replacing their `raise NotImplementedError(...)`.
 3. **Run** `uv run tour.py`: it checks your work, shows your progress, and tells you what to fix.
 
 You can also check a single step with `uv run tour.py 4`, or run every check at once with `uv run pytest`.
 
 ## The route
 
-Nine functions in `backprop/`, all empty when you start, in the order the code is written:
+Thirteen methods in `backprop/`, `__init__` included, all empty when you start, in the order the code is written:
 
 | Step | You write | In | Lesson |
 |:---:|---|---|---|
-| 1 | `Linear.forward` | `layers.py` | [The linear layer](lessons/01-linear-forward.md) |
+| 1 | `Linear.__init__`, `Linear.forward` | `layers.py` | [The linear layer](lessons/01-linear-forward.md) |
 | 2 | `Linear.backward` | `layers.py` | [Backprop through a layer](lessons/02-linear-backward.md) |
-| 3 | `Sigmoid.forward` | `layers.py` | [The sigmoid](lessons/03-sigmoid-forward.md) |
+| 3 | `Sigmoid.__init__`, `Sigmoid.forward` | `layers.py` | [The sigmoid](lessons/03-sigmoid-forward.md) |
 | 4 | `Sigmoid.backward` | `layers.py` | [The sigmoid's derivative](lessons/04-sigmoid-backward.md) |
-| 5 | `MSE.forward` | `losses.py` | [The cost](lessons/05-mse-forward.md) |
+| 5 | `MSE.__init__`, `MSE.forward` | `losses.py` | [The cost](lessons/05-mse-forward.md) |
 | 6 | `MSE.backward` | `losses.py` | [Where backprop starts](lessons/06-mse-backward.md) |
-| 7 | `Sequential.forward` | `network.py` | [Chaining layers](lessons/07-sequential-forward.md) |
+| 7 | `Sequential.__init__`, `Sequential.forward` | `network.py` | [Chaining layers](lessons/07-sequential-forward.md) |
 | 8 | `Sequential.backward` | `network.py` | [Backprop through the network](lessons/08-sequential-backward.md) |
 | 9 | `Sequential.step` | `network.py` | [Gradient descent](lessons/09-sequential-step.md) |
 | 10 | nothing: watch it learn | `train_xor.py` | [Train it on XOR](lessons/10-train-xor.md) |

@@ -34,11 +34,13 @@ That's page 2 of the notes: "how sensitive is the cost to the previous layer?" a
 
 ## Your task
 
-In `Sequential.backward(self, grad)`:
+Write `Sequential.backward`, which returns $\frac{\partial C}{\partial x}$ for the network input.
 
-1. walk through `self.layers` **from the last to the first**, without changing the list itself (the next forward still needs it in the right order);
-2. give each layer's `backward` the gradient returned by the layer above it;
-3. return the final gradient, $\frac{\partial C}{\partial x}$ for the network input.
+Questions to ask yourself:
+
+- Which layer should receive `grad` first?
+- What does each layer's backward receive, and what does it give back?
+- The next forward still needs the layers in their original order. Does your loop leave them as they are?
 
 ## Shapes
 
@@ -52,7 +54,7 @@ In `Sequential.backward(self, grad)`:
 <details>
 <summary>Hint 1</summary>
 
-`reversed(self.layers)` gives you the layers from the last to the first, and leaves the list alone. Avoid `self.layers.reverse()`: it flips the network itself.
+`reversed(some_list)` gives you its items from the last to the first, and leaves the list alone. Avoid `some_list.reverse()`: it flips the list itself, so the network would be upside down on the next forward.
 
 </details>
 

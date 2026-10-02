@@ -1,6 +1,6 @@
-# Step 3: `Sigmoid.forward`
+# Step 3: `Sigmoid.__init__` and `Sigmoid.forward`
 
-> **Write:** `Sigmoid.forward` in `backprop/layers.py`
+> **Write:** `Sigmoid.__init__` and `Sigmoid.forward` in `backprop/layers.py`
 >
 > **Notes:** page 1, where $a^{(L)} = \sigma(z^{(L)})$
 
@@ -24,24 +24,20 @@ If numpy ever warns about an *overflow in exp*, don't worry: for a very negative
 
 It's applied to **every number on its own**: $a_j = \sigma(z_j)$. Neuron $j$'s activation only depends on neuron $j$'s $z$. So the shape never changes.
 
-### Why forward stores σ(z)
-
-In the next step you'll see that $\sigma'(z)$ can be written using $\sigma(z)$ itself. So forward keeps its output in `self.sig_z`, and backward reuses it.
-
 ## Your task
 
-In `Sigmoid.forward(self, z)`:
+Write `Sigmoid.__init__` and `Sigmoid.forward`, which returns $\sigma(z)$ for every entry of `z`.
 
-1. compute $\sigma(z)$ for every entry of `z`;
-2. store it in `self.sig_z`;
-3. return it.
+Questions to ask yourself:
+
+- A sigmoid has no weights. Does its `__init__` need anything at all?
+- Read the theory of step 4 before deciding: is there a value computed in forward that backward will want?
 
 ## Shapes
 
 | | Shape |
 |---|---|
 | `z` (in) | anything, usually `(batch_size, n_out)` |
-| `self.sig_z` | same as `z` |
 | returned | same as `z` |
 
 ## Hints

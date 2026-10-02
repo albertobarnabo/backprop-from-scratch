@@ -68,13 +68,12 @@ $$\frac{\partial C}{\partial x_{ik}} = \sum_j g_{ij} w_{jk}$$
 
 ## Your task
 
-In `Linear.backward(self, grad_out)`, using `self.x` (stored by forward) and `self.W`:
+Write `Linear.backward`. It returns $\frac{\partial C}{\partial x}$, and leaves $\frac{\partial C}{\partial W}$ and $\frac{\partial C}{\partial b}$ in `self.dW` and `self.db`: that's where the learning step (step 9) will look for them.
 
-1. store $\frac{\partial C}{\partial W}$ in `self.dW`;
-2. store $\frac{\partial C}{\partial b}$ in `self.db`;
-3. return $\frac{\partial C}{\partial x}$.
+Questions to ask yourself:
 
-Backward only computes gradients: leave `W` and `b` as they are. Changing them is the job of step 9.
+- The formulas need $x$, which isn't an argument of backward. Where does it come from?
+- Should backward change `W` and `b`, or only say how they should change?
 
 ## Shapes
 
@@ -83,8 +82,8 @@ A gradient has the shape of the thing it's the gradient of:
 | | Shape |
 |---|---|
 | `grad_out` (in) | `(batch_size, n_out)` |
-| `self.x` | `(batch_size, n_in)` |
-| `self.W` | `(n_out, n_in)` |
+| `x`, the input of forward | `(batch_size, n_in)` |
+| `W` | `(n_out, n_in)` |
 | `self.dW` | `(n_out, n_in)`, like `W` |
 | `self.db` | `(n_out,)`, like `b` |
 | returned $\frac{\partial C}{\partial x}$ | `(batch_size, n_in)`, like `x` |

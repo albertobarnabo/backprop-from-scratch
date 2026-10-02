@@ -28,7 +28,12 @@ One full training step is then: forward, cost, backward, step. Repeat it many ti
 
 ## Your task
 
-In `Sequential.step(self, lr)`: for every layer that has parameters, update `W` and `b` using the stored `dW` and `db`, scaled by `lr`. Layers without parameters are left alone.
+Write `Sequential.step`: one step of gradient descent, with learning rate `lr`, for every layer that has parameters.
+
+Questions to ask yourself:
+
+- Which layers have something to learn, and how can you tell them apart?
+- After backward, where are the gradients?
 
 ## Hints
 

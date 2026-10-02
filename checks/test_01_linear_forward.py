@@ -26,6 +26,15 @@ def test_parameters_have_the_right_shapes():
                 hints={(N_OUT, 1): "b has an extra dimension.", (1, N_OUT): "b has an extra dimension."})
 
 
+def test_weights_are_not_all_equal():
+    """the weights don't all start with the same value"""
+    W = np.asarray(load("layers").Linear(N_IN, N_OUT, np.random.default_rng(0)).W)
+    if np.all(W == W.flat[0]):
+        fail(f"Every weight starts at {W.flat[0]}. Then every neuron of the layer computes the same thing, "
+             "gets the same gradient, and they stay identical forever: the layer is as good as one neuron.\n"
+             "Start the weights at different, random values.")
+
+
 def test_weights_come_from_the_rng():
     """two layers built from the same seed are identical, from different seeds they're not"""
     Linear = load("layers").Linear
@@ -38,15 +47,6 @@ def test_weights_come_from_the_rng():
     if np.array_equal(first.W, different.W):
         fail("Layers built from different seeds got the same weights. The weights should be random, "
              "drawn from the rng you're given.")
-
-
-def test_weights_are_not_all_equal():
-    """the weights don't all start with the same value"""
-    W = np.asarray(load("layers").Linear(N_IN, N_OUT, np.random.default_rng(0)).W)
-    if np.all(W == W.flat[0]):
-        fail(f"Every weight starts at {W.flat[0]}. Then every neuron of the layer computes the same thing, "
-             "gets the same gradient, and they stay identical forever: the layer is as good as one neuron.\n"
-             "Start the weights at different, random values.")
 
 
 def test_works_without_an_rng():
