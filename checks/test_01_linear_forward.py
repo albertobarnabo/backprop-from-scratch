@@ -29,14 +29,13 @@ def test_parameters_have_the_right_shapes():
 def test_weights_come_from_the_rng():
     """two layers built from the same seed are identical, from different seeds they're not"""
     Linear = load("layers").Linear
-    first = Linear(N_IN, N_OUT, np.random.default_rng(0)).W
-    again = Linear(N_IN, N_OUT, np.random.default_rng(0)).W
-    other = Linear(N_IN, N_OUT, np.random.default_rng(1)).W
-    if not np.array_equal(first, again):
-        fail("Two layers built from the same seed got different weights.\n"
-             "Draw every random number from the rng you're given: np.random.something() uses a global "
-             "generator that ignores the seed.")
-    if np.array_equal(first, other):
+    first, again, different = (Linear(N_IN, N_OUT, np.random.default_rng(seed)) for seed in (0, 0, 1))
+    for name in ("W", "b"):
+        if not np.array_equal(getattr(first, name), getattr(again, name)):
+            fail(f"Two layers built from the same seed got different values in {name}.\n"
+                 "Draw every random number from the rng you're given: np.random.something() uses a global "
+                 "generator that ignores the seed.")
+    if np.array_equal(first.W, different.W):
         fail("Layers built from different seeds got the same weights. The weights should be random, "
              "drawn from the rng you're given.")
 

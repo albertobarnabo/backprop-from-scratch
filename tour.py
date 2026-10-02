@@ -17,13 +17,13 @@ ROOT = Path(__file__).resolve().parent
 
 STEPS = [
     # (checks module, what you write, where, lesson)
-    ("test_01_linear_forward", "Linear.forward", "backprop/layers.py", "lessons/01-linear-forward.md"),
+    ("test_01_linear_forward", "Linear: __init__, forward", "backprop/layers.py", "lessons/01-linear-forward.md"),
     ("test_02_linear_backward", "Linear.backward", "backprop/layers.py", "lessons/02-linear-backward.md"),
-    ("test_03_sigmoid_forward", "Sigmoid.forward", "backprop/layers.py", "lessons/03-sigmoid-forward.md"),
+    ("test_03_sigmoid_forward", "Sigmoid: __init__, forward", "backprop/layers.py", "lessons/03-sigmoid-forward.md"),
     ("test_04_sigmoid_backward", "Sigmoid.backward", "backprop/layers.py", "lessons/04-sigmoid-backward.md"),
-    ("test_05_mse_forward", "MSE.forward", "backprop/losses.py", "lessons/05-mse-forward.md"),
+    ("test_05_mse_forward", "MSE: __init__, forward", "backprop/losses.py", "lessons/05-mse-forward.md"),
     ("test_06_mse_backward", "MSE.backward", "backprop/losses.py", "lessons/06-mse-backward.md"),
-    ("test_07_sequential_forward", "Sequential.forward", "backprop/network.py", "lessons/07-sequential-forward.md"),
+    ("test_07_sequential_forward", "Sequential: __init__, forward", "backprop/network.py", "lessons/07-sequential-forward.md"),
     ("test_08_sequential_backward", "Sequential.backward", "backprop/network.py", "lessons/08-sequential-backward.md"),
     ("test_09_sequential_step", "Sequential.step", "backprop/network.py", "lessons/09-sequential-step.md"),
     ("test_10_train_xor", "train it on XOR", "nothing to write", "lessons/10-train-xor.md"),
@@ -134,12 +134,12 @@ def explain(error):
     if "NoneType" in message:
         return (
             "Something is None: a function that doesn't return its result, "
-            "or a value forward was supposed to store on self."
+            "or an attribute that was never set to a real value."
         )
     if isinstance(error, NameError) and tb and tb.tb_frame.f_code.co_name == "backward":
         return (
-            "Variables from forward don't exist in backward: each call has its own variables.\n"
-            "Anything backward needs must be stored on self during forward (like self.x or self.sig_z)."
+            "Variables from forward don't exist in backward: each call has its own local variables.\n"
+            "If backward needs something that only forward sees, where could forward keep it?"
         )
     if isinstance(error, ModuleNotFoundError) and error.name in ("layers", "losses", "network"):
         return f"Inside the backprop package, import with the package name: from backprop.{error.name} import ..."
@@ -151,7 +151,8 @@ def explain(error):
     if isinstance(error, AttributeError) and "'Sigmoid' object has no attribute" in message:
         return "Not every layer has parameters: Sigmoid has no W, b, dW or db. Only update the layers that have them."
     if isinstance(error, AttributeError):
-        return "Check the spelling: the names used here are W, b, dW, db, x, sig_z, pred, y and layers."
+        return ("Check the spelling, and that the attribute was set before this line runs "
+                "(the names the checks look for are W, b, dW and db).")
     return None
 
 
@@ -175,6 +176,9 @@ def report(number, step, passed, failure):
     print(paint(f"Step {number} of {len(STEPS)}: {title}", "bold"))
     print(f"  read   {lesson}")
     if file != "nothing to write":
+        if ": " in title:
+            owner, methods = title.split(": ")
+            title = " and ".join(f"{owner}.{method}" for method in methods.split(", "))
         print(f"  write  {title} in {file}")
     print()
     for check in passed:
@@ -215,7 +219,7 @@ def board(done, current):
     print(paint(f"Backprop from scratch: {done} of {len(STEPS)} steps done", "bold"))
     print()
     for number, (_, title, file, _) in enumerate(STEPS, 1):
-        line = f"{number:>2}  {title:<22}{file}"
+        line = f"{number:>2}  {title:<31}{file}"
         if number <= done:
             print(paint(f"  ✓ {line}", "green"))
         elif current and number == current[0]:

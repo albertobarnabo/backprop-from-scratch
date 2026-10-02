@@ -40,7 +40,7 @@ def test_layers_run_in_reverse():
     if sorted(log) != sorted(NAMES):
         if log == ["third", "second"]:
             why = ("The first layer's backward never ran. A range's stop value is excluded: "
-                   "range(len(self.layers) - 1, 0, -1) stops before index 0.")
+                   "range(len(layers) - 1, 0, -1) stops before index 0.")
         else:
             why = ("Every layer's backward must run exactly once, even for layers without parameters like Sigmoid: "
                    "their factor is part of the chain.")

@@ -30,6 +30,7 @@ def test_learns_xor():
             "Every piece passed its own check, but the network didn't learn XOR.\n"
             + "\n".join(history)
             + f"\npredictions: {np.round(pred.ravel(), 4)}, targets: {y.ravel()}\n"
-            "Look for something that survives from one training step to the next: "
-            "a value kept on self and reused, or an array changed in place."
+            "Two usual suspects: how Linear.__init__ starts the weights (very small or very large weights can "
+            "leave the sigmoids stuck where they're flat), or something that survives from one training step "
+            "to the next, like a value kept on self and reused, or an array changed in place."
         )
