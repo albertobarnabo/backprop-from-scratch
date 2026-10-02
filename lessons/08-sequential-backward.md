@@ -18,13 +18,7 @@ Read it **right to left**: start from the cost and walk down. The last factor co
 - it applies its own factor and returns $\frac{\partial C}{\partial (\text{its input})}$;
 - its input is the previous layer's output, so what it returns is exactly what the previous layer's `backward` needs.
 
-```
-forward    x ──> Linear ──> Sigmoid ──> Linear ──> Sigmoid ──> pred ──> MSE ──> C
-
-backward  dx <── Linear <── Sigmoid <── Linear <── Sigmoid <───────────── MSE.backward()
-                   │                      │
-                 dW, db                 dW, db
-```
+![The pipeline Linear, Sigmoid, Linear, Sigmoid, MSE, with the four layers outlined as Sequential and MSE outside it: values x, z(1), a(1), z(2), a(2), C flow forward on top; below, gradients flow backward, starting at MSE.backward() with dC/da(2) and passing through each layer down to dC/dx, while each Linear drops out its dW and db.](../assets/lessons/08-backward.png)
 
 That's page 2 of the notes: "how sensitive is the cost to the previous layer?" asked once per layer, top to bottom. Along the way every `Linear` stores its `dW` and `db`.
 

@@ -22,6 +22,8 @@ $$W \leftarrow W - \eta \frac{\partial C}{\partial W} \qquad b \leftarrow b - \e
 
 $\eta$ is the **learning rate** `lr`: how big a step you take. Too small and learning crawls; too big and you jump over the valley.
 
+![Gradient descent on the same cost curve C(w) from the same start, three times: with eta too small six steps crawl down the wall, with eta just right three steps reach the bottom, with eta too big six steps jump back and forth over the valley and climb higher.](../assets/lessons/09-descent.png)
+
 After `backward`, every Linear layer holds its gradients in `dW` and `db`. `step` uses them. Sigmoid has no parameters, so there's nothing to update there.
 
 One full training step is then: forward, cost, backward, step. Repeat it many times and the network learns.

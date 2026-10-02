@@ -36,6 +36,8 @@ Questions to ask yourself:
 
 The shape changes along the way: each Linear changes the number of columns, each Sigmoid keeps it.
 
+![The XOR network as a chain of arrays drawn as grids: x (4, 2) goes through Linear(2, 4) to z^(1) (4, 4), Sigmoid to a^(1) (4, 4), Linear(4, 1) to z^(2) (4, 1) and Sigmoid to a^(2) (4, 1); a caption says all 4 examples are in one batch, one row per example, so the 4 rows stay the same and only the columns change at each Linear.](../assets/lessons/07-network-shapes.png)
+
 ## Hints
 
 <details>

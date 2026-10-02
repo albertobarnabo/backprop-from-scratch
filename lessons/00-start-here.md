@@ -52,6 +52,8 @@ Backpropagation is the chain rule, organised so that every piece only does its o
 
 That's why the code is split into small classes that each have a `forward` and a `backward`.
 
+![The pipeline Linear, Sigmoid, Linear, Sigmoid, MSE: values x, z(1), a(1), z(2), a(2), C flow forward on top in blue, gradients dC/dx to dC/da(2) flow backward below in orange, and the highlighted middle Linear receives how C changes with its output and hands down how C changes with its input.](../assets/lessons/00-big-picture.png)
+
 ## Notation: from the math to the code
 
 | Math | Code | Shape |

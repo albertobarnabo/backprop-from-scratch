@@ -22,9 +22,13 @@ Put all the weights in a matrix `W`, with `W[j, k]` $= w_{jk}$. Row $j$ holds al
 
 $$z = W a + b$$
 
+![Three inputs a_0, a_1, a_2 connected to four neurons, with the three blue connections into neuron j labelled w_j0, w_j1, w_j2 and the formula z_j = sum over k of w_jk a_k + b_j; beside it the matrix W of shape (n_out, n_in) with row j, holding w_j0 w_j1 w_j2, highlighted as the weights into neuron j.](../assets/lessons/01-layer.png)
+
 ### Where the weights start
 
 Before any learning, the weights need a value. The obvious choice, all zeros, is a trap: if every weight of a layer starts equal, every neuron computes the same $z$, receives the same gradient, gets the same update, and stays identical to its neighbours forever. The layer would be as good as a single neuron. Starting from **random** values breaks that symmetry. The biases can start at zero: the random weights are already enough to make the neurons different.
+
+![Two small networks before and after training: with equal starting weights both neurons get the same gradient and end up with identical incoming weights (twins forever), while with random starting weights they get different gradients and end up with different weights (symmetry broken).](../assets/lessons/01-symmetry.png)
 
 How random? $z_j$ is a sum of `n_in` terms, so the more inputs, the bigger it gets. If $z$ is large, the sigmoid that comes next sits on its flat parts, where its slope is almost 0, and learning crawls. A common choice is to draw the weights from a normal distribution and scale them by $\frac{1}{\sqrt{n_{in}}}$, which keeps $z$ of the order of 1.
 
@@ -33,6 +37,8 @@ The layer receives a random number generator, `rng`, so that the same seed alway
 ### A batch of examples
 
 We don't feed one example at a time: `x` holds `batch_size` examples, one per **row**, so it's `(batch_size, n_in)`. You want the same thing for every row: row $i$ of the result is $W x_i + b$, the $z$ of example $i$. So the result is `(batch_size, n_out)`: one row per example, one column per neuron.
+
+![The three arrays of a Linear layer drawn as grids: x (batch_size, n_in) with one row per example, W (n_out, n_in) with one row per neuron, and z (batch_size, n_out) where row i is example i and column j is neuron j.](../assets/lessons/01-batch-shapes.png)
 
 Careful: $W a$ is written for one example as a column vector. Your examples are **rows**. Same math, but the shapes have to be arranged differently.
 

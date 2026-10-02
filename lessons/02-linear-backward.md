@@ -46,6 +46,8 @@ $$\frac{\partial C}{\partial b_j} = 1 \cdot \frac{\partial C}{\partial z_j}$$
 
 $$\frac{\partial C}{\partial a_k} = \sum_j \frac{\partial z_j}{\partial a_k} \cdot \frac{\partial C}{\partial z_j} = \sum_j w_{jk} \cdot \frac{\partial C}{\partial z_j}$$
 
+![Left: the weight w_jk is the single blue connection from input a_k into neuron z_j, so only the orange gradient arriving at z_j flows back to it (one path); right: input a_k feeds all four neurons, so four orange gradient arrows flow back into a_k and are added up, with the formulas dC/dw_jk = a_k * dC/dz_j and dC/da_k = sum over j of w_jk * dC/dz_j.](../assets/lessons/02-paths.png)
+
 ## A batch of examples
 
 Now add the example index $i$. To keep the formulas short, write:
@@ -63,6 +65,8 @@ $$\frac{\partial C}{\partial w_{jk}} = \sum_i g_{ij} x_{ik} \qquad\qquad \frac{\
 The **inputs are not shared**: row $i$ of `x` belongs to example $i$ only. No sum over examples, just the sum over neurons from before:
 
 $$\frac{\partial C}{\partial x_{ik}} = \sum_j g_{ij} w_{jk}$$
+
+![Top: because W is shared, each of the five examples (i = 1 to 5) contributes a full 4 x 3 weight-shaped grid, and the five grids add up into one dC/dW of the same shape (i is summed away); bottom: because x is not shared, each of the five examples' input gradients goes into its own row of a 5 x 3 dC/dx (i is kept).](../assets/lessons/02-batch.png)
 
 > **Sum, not average?** Page 2 of the notes says the total cost is the **average** over the examples, $\frac{1}{n}\sum$. That $\frac{1}{n}$ is already inside `grad_out`: the loss puts it there (you'll write it in step 6). Divide again here and you divide twice.
 

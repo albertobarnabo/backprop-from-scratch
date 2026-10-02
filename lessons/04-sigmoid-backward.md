@@ -18,6 +18,8 @@ $$\sigma'(z) = \sigma(z) \big(1 - \sigma(z)\big)$$
 
 The derivative only needs $\sigma(z)$, which forward already computed.
 
+![The sigmoid (faded) and its derivative sigma' = sigma(1 - sigma) (orange) on the same axes: sigma' peaks at 0.25 at z = 0 and is almost 0 in the shaded flat zones, where the gradient vanishes.](../assets/lessons/04-sigmoid-derivative.png)
+
 ### The chain rule, one neuron at a time
 
 `grad_out` is $\frac{\partial C}{\partial a}$, how the cost reacts to this layer's output. You want $\frac{\partial C}{\partial z}$, how it reacts to the input. From the notes:

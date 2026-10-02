@@ -15,6 +15,8 @@ XOR outputs 1 when exactly one of its two inputs is 1:
 
 Plot the four points: the 1s sit on one diagonal, the 0s on the other. No single straight line separates them, so a single neuron can't learn XOR. A hidden layer can: it bends the space so that a line works.
 
+![The four XOR points on the unit square, the two y = 1 points (orange) on one diagonal and the two y = 0 points (blue) on the other, next to three attempts at splitting them with one straight line, each leaving at least one point circled in red on the wrong side.](../assets/lessons/10-xor-problem.png)
+
 The network: `Linear(2, 4) → Sigmoid → Linear(4, 1) → Sigmoid`, all four examples in one batch.
 
 ## Run it
@@ -34,6 +36,8 @@ model.step(LR)                   # 5. gradient descent update
 ```
 
 You should see the loss fall towards 0, and predictions close to 0, 1, 1, 0.
+
+![Left, the trained 2-4-1 network's output over the input plane: an orange band through the two y = 1 points between two white 0.5 boundary curves, with blue regions around the two y = 0 points; right, the training loss on a log scale dropping from about 0.28 to 0.0002 over 10,000 steps.](../assets/lessons/10-xor-solved.png)
 
 The tour runs exactly this in step 10:
 

@@ -20,6 +20,8 @@ $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
 
 It squashes any number into $(0, 1)$: very negative $z$ gives almost 0, very positive almost 1, and $\sigma(0) = 0.5$.
 
+![The sigmoid curve for z from -8 to 8, rising from almost 0 to almost 1, with the flat zones below -4 and above 4 shaded and the point sigma(0) = 0.5 marked.](../assets/lessons/03-sigmoid.png)
+
 If numpy ever warns about an *overflow in exp*, don't worry: for a very negative $z$, $e^{-z}$ is too big to store and becomes infinity, and $1 / \infty = 0$ is still the right answer.
 
 It's applied to **every number on its own**: $a_j = \sigma(z_j)$. Neuron $j$'s activation only depends on neuron $j$'s $z$. So the shape never changes.

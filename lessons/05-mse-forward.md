@@ -26,6 +26,8 @@ $$C = \frac{1}{n} \sum_{i=0}^{n-1} C_i = \frac{1}{n} \sum_i \sum_j \left(a_{ij} 
 
 where $a_{ij}$ is output $j$ of example $i$ (`pred[i, j]`), $y_{ij}$ its target, and $n$ = `batch_size`. Note what you divide by: the number of **examples**, not the number of entries. Each example's cost is a sum over its output neurons; only the examples are averaged.
 
+![A 4 by 2 grid of squared errors (a_ij - y_ij)^2, one row per example and one column per output; each row is summed over j into its cost C_0 to C_3 (the cost of each example), and a brace averages the four costs into C = (1/n) sum_i C_i, with n = 4 examples, not the 8 entries.](../assets/lessons/05-cost.png)
+
 Some books put a $\frac{1}{2}$ in front, to cancel the 2 of the derivative. Not here: this is exactly the cost from the notes.
 
 ## Your task
